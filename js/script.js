@@ -1,5 +1,3 @@
-///////////////////// News API app ////////////////////////////
-
 $("#searchBtn").on("click", function () {
   let topic = $("#searchText").val();
 
@@ -15,6 +13,28 @@ function wikiAPIstub(topic) {
 
 function flickrAPIstub(topic) {
   console.log("flicrAPI called with..." + " " + topic);
+
+  $("#flickrDiv").empty();
+
+  var api_url = "https://api.flickr.com/services/feeds/photos_public.gne?format=json&tags=" + topic + "&safe_search=1";
+
+  $.ajax({
+    url: api_url,
+    dataType: "jsonp", // jsonp
+    jsonpCallback: 'jsonFlickrFeed', // add this property
+    success: function (result, status, xhr) {
+      $.each(result.items, function (i, item) {
+        $("<img>").attr("src", item.media.m).appendTo("#flickrDiv");
+        if (i === 5) {
+          return false;
+        }
+      });
+    },
+    error: function (xhr, status, error) {
+      console.log(xhr)
+      $("#flickrDiv").html("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+    }
+  });
 }
 
 function newsAPIstub(topic) {
@@ -57,6 +77,3 @@ function newsAPIstub(topic) {
     }
   });
 }
-
-
-//////////////////////////////////
